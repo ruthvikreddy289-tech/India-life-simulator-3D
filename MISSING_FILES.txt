@@ -1,0 +1,13 @@
+Missing required project files / assets (not generated or replaced):
+- dist/game.js
+- dist/world.js
+- dist/district-layout.js
+- dist/vehicle.js
+- dist/traffic-rules.js
+- dist/assets/architecture/apartment-medium.glb
+- dist/assets/CREDITS.md
+- dist/assets/sources.json
+
+Original station(2).glb duplicates station(1).glb exactly; one copy kept.
+The original car.glb is preserved in tools/; the runtime uses car-player.glb.
+This is an INCOMPLETE project archive, not a playable release.

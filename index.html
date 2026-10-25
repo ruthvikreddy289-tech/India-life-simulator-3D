@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173e35">
+  <meta name="description" content="Make a living, find your way, and explore Navapur. A playable 3D Indian city driving simulator with touch controls.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>India Life Simulator 3D — A day in Navapur</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-jobs" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12c5 3 13 3 18 0M10 13h4"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="m10 3-.7 2.5-2 .9L5 5.8 2.8 9.5l1.8 1.8v2L2.8 15 5 18.8l2.3-.5 2 .9L10 22h4l.7-2.8 2-.9 2.3.5 2.2-3.8-1.8-1.7v-2l1.8-1.8L19 5.8l-2.3.6-2-.9L14 3z" transform="translate(0 -1) scale(1 .95)"/><circle cx="12" cy="11" r="3"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5z"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="m8 6 1.5-3h5L16 6h4a2 2 0 0 1 2 2v11H2V8a2 2 0 0 1 2-2z"/><circle cx="12" cy="12" r="4"/></symbol>
+    <symbol id="i-horn" viewBox="0 0 24 24"><path d="M3 10h4l7-5v14l-7-5H3zM18 8c2 2 2 6 0 8M21 5c4 4 4 10 0 14"/></symbol>
+    <symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="m10 11-6-2m10 2 6-2m-8 5v7"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 20V4m-6 6 6-6 6 6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.7 7.3L22 12l-7.3 2.7L12 22l-2.7-7.3L2 12l7.3-2.7z"/></symbol>
+  </defs></svg>
+
+  <canvas id="game" aria-label="3D driving view of Navapur, India"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div id="loading" class="loading-screen" role="status"><span class="loading-mark">IL<span>3D</span></span><div class="loader"></div><p id="loading-status">Waking up Navapur…</p><small>A new day. A little adventure.</small></div>
+  <div id="error" class="error-panel" hidden role="alert"></div>
+
+  <main class="hud" aria-label="Driving controls and information">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">i<span>L</span></div><div><div class="brand-name">INDIA <span>LIFE SIMULATOR</span></div><div class="brand-edition"><span class="live-dot"></span> 3D <span class="brand-divider">/</span> EARLY ACCESS</div></div></div>
+      <div class="location-pill"><span class="sun-dot" aria-hidden="true"></span><span id="district">Central Navapur</span><span class="location-divider"></span><time id="clock">16:30</time></div>
+      <div class="account-panel"><div class="balance"><small>YOUR BALANCE</small><span id="wallet">₹1,250</span></div><div class="vehicle-health"><span class="health-indicator" aria-hidden="true"></span><div><small>VEHICLE</small><span id="condition">100%</span></div></div><button id="jobs-button" class="button jobs-button"><svg><use href="#i-jobs"/></svg><span>Find a job</span></button><button id="settings-button" class="icon-button" aria-label="Settings" title="Settings"><svg><use href="#i-settings"/></svg></button><button id="pause-button" class="icon-button" aria-label="Pause game" title="Pause (Esc)"><svg><use href="#i-pause"/></svg></button></div>
+    </header>
+
+    <aside class="navigation panel" aria-label="GPS navigation">
+      <div class="panel-heading"><span><svg><use href="#i-compass"/></svg> LIVE NAVIGATION</span><span class="gps-dot">GPS</span></div>
+      <div class="map-wrap"><canvas id="minimap" width="256" height="256" aria-label="Map showing roads, your car, and your route"></canvas><span class="map-north">N<span>↑</span></span><span class="map-label">NAVAPUR</span></div>
+      <div class="navigation-content"><div class="nav-direction"><svg><use href="#i-arrow"/></svg></div><div class="nav-text"><strong id="nav-title">The city is yours</strong><span id="nav-instruction">Choose a job or take a drive.</span></div><span id="nav-distance">—</span></div>
+      <div id="route-status" class="route-status"><span class="live-dot"></span> Free roam · Drive on the left</div>
+    </aside>
+
+    <aside id="job-panel" class="job-panel panel" hidden aria-label="Current job"><div class="job-heading"><span class="job-overline">ON THE JOB</span><span id="job-reward" class="job-reward"></span></div><strong id="job-title"></strong><p id="job-description"></p><div id="job-progress" class="job-progress"></div></aside>
+
+    <div class="world-caption"><span class="live-dot"></span> NAVAPUR, INDIA <span>16° N · 73° E</span></div>
+    <div class="driving-controls">
+      <div class="steering-cluster"><div class="control-caption"><svg><use href="#i-wheel"/></svg> STEERING</div><button id="steering-wheel" class="steering-wheel" role="slider" aria-label="Steering wheel: drag the rim to turn" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Centered"><span id="wheel-rotor" class="wheel-rotor" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="wheel-rim-shadow" cx="100" cy="100" r="81"/><circle class="wheel-rim" cx="100" cy="100" r="81"/><circle class="wheel-rim-stitch" cx="100" cy="100" r="79"/><path class="wheel-spoke" d="m30 73 57 16 2 22-58-18zm140 0-57 16-2 22 58-18zM89 112h22l7 67H82z"/><path class="wheel-spoke-inset" d="m38 78 40 12-1 8-39-10zm124 0-40 12 1 8 39-10zM96 126h8l4 43H92z"/><circle class="wheel-hub-edge" cx="100" cy="103" r="30"/><circle class="wheel-hub-center" cx="100" cy="103" r="25"/><path class="wheel-emblem" d="M89 96h5v16h-5zm11 0h5v12h9v4h-14z"/><path class="wheel-center-mark" d="M96 11h8v16h-8z"/></svg></span></button><div class="wheel-hint">DRAG TO STEER</div><div class="secondary-controls"><button id="horn" class="small-control" aria-label="Sound horn" title="Horn (H)"><svg><use href="#i-horn"/></svg><span>HORN</span></button><button id="camera-button" class="small-control" aria-label="Change camera" title="Camera (C)"><svg><use href="#i-camera"/></svg><span>CAMERA</span></button></div></div>
+
+      <div class="dashboard"><div class="speedometer"><div class="speedometer-top"><span class="drive-light"></span><span>AUTOMATIC</span><span id="gear" class="current-gear">D</span></div><div class="speed-readout"><span id="speed">0</span><span id="speed-unit">km/h</span></div><div class="speedometer-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="gear-selector" aria-label="Gear selection"><button id="gear-drive" class="active" aria-label="Drive gear" aria-pressed="true">D <span>DRIVE</span></button><button id="gear-reverse" aria-label="Reverse gear" aria-pressed="false">R <span>REVERSE</span></button></div></div>
+
+      <div class="pedal-cluster"><div class="pedals"><div class="pedal-unit reverse-unit"><button id="reverse-pedal" class="pedal reverse-pedal" aria-label="Reverse pedal: stop first, then hold to reverse" aria-pressed="false"><span class="pedal-face"><b>R</b><i></i><i></i></span></button><span class="pedal-label">REVERSE</span></div><div class="pedal-unit brake-unit"><button id="brake" class="pedal brake-pedal" aria-label="Brake: hold to slow or stop"><span class="pedal-face"><i></i><i></i><i></i><i></i></span></button><span class="pedal-label">BRAKE</span></div><div class="pedal-unit gas-unit"><button id="accelerator" class="pedal gas-pedal" aria-label="Accelerator: stop first to switch to drive, then hold to accelerate"><span class="pedal-face"><i></i><i></i><i></i><i></i><i></i></span></button><span class="pedal-label">ACCELERATOR</span></div></div><button id="handbrake" class="handbrake-button" aria-label="Hold handbrake"><span>Ⓟ</span> HANDBRAKE</button></div>
+    </div>
+    <button id="interact" class="interact-button" hidden></button>
+    <footer class="keyboard-hints"><span><kbd>W</kbd><kbd>S</kbd> pedals</span><span><kbd>A</kbd><kbd>D</kbd> steer</span><span><kbd>R</kbd> reverse</span><span><kbd>E</kbd> interact</span><span><kbd>Space</kbd> handbrake</span></footer>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+
+  <div id="welcome" class="welcome-overlay"><section class="welcome-card" aria-labelledby="welcome-title"><div class="welcome-topline"><span class="live-dot"></span> A NEW DAY IN NAVAPUR <span>01</span></div><h1 id="welcome-title">Your city.<br>Your next chapter<span>.</span></h1><p>Take the wheel. Explore the streets, pick up a delivery, and earn your own way in a living Indian city.</p><div class="welcome-controls"><span><svg><use href="#i-wheel"/></svg> Drag the steering wheel</span><span class="welcome-pedal-icon" aria-hidden="true">Ⅱ</span><span>Hold a pedal to drive</span></div><button id="start-button" class="primary-button">Start driving <span aria-hidden="true">↗</span></button><div class="welcome-footnote"><span>iPad Safari · Touch + keyboard</span><span>Best in landscape</span></div></section></div>
+
+  <div id="pause-overlay" class="pause-overlay" hidden><section class="pause-card"><span class="eyebrow">TAKE A BREATHER</span><h2>City life can wait.</h2><p>Your drive is paused. Pick up right where you left off.</p><button id="resume-button" class="primary-button">Back to the city <span>↗</span></button></section></div>
+
+  <dialog id="jobs-dialog" aria-labelledby="jobs-heading"><div class="dialog-header"><div><span class="eyebrow">MAKE YOUR OWN WAY</span><h2 id="jobs-heading">A little work. A little adventure.</h2></div><button id="jobs-close" class="icon-button" aria-label="Close jobs"><svg><use href="#i-close"/></svg></button></div><p class="dialog-intro">Local deliveries, familiar faces. Choose a job and follow your GPS to get started.</p><div id="jobs-list" class="jobs-list"></div><div class="dialog-footer"><span class="live-dot"></span> Deliveries pay on completion. Drive carefully to keep your car in good shape.</div></dialog>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-heading"><div class="dialog-header"><div><span class="eyebrow">MAKE YOURSELF AT HOME</span><h2 id="settings-heading">Your drive, your way.</h2></div><button id="settings-close" class="icon-button" aria-label="Close settings"><svg><use href="#i-close"/></svg></button></div><div class="settings-row"><label for="sound-toggle"><strong>City sounds</strong><span>Engine, horn, and driving feedback</span></label><input type="checkbox" id="sound-toggle" checked></div><div class="settings-row"><label for="quality-select"><strong>Graphics quality</strong><span>Choose low for a smoother drive on older iPads.</span></label><select id="quality-select"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div><div class="settings-help"><strong>A few things before you head out</strong><p>Drag the steering wheel around its rim to turn; release to center it. You can steer and hold a pedal with separate fingers. Hold the accelerator to drive, the brake to stop, or the R pedal to reverse. Come to a stop before changing direction. Follow the route, then stop inside the marker to collect or deliver.</p><p>Your money and completed jobs save on this device when browser storage is available.</p></div><div class="settings-actions"><button id="reset-car" class="button">Return car to the road</button><button id="reset-progress" class="button danger-button">Reset saved progress</button></div><div class="asset-credits"><a href="./assets/CREDITS.md" target="_blank" rel="noopener">Asset credits and licenses <span aria-hidden="true">↗</span></a></div><div class="dialog-footer">Keyboard: WASD / arrows to drive · R to change gear · H horn · C camera · E interact · Esc pause</div></dialog>
+  <div class="orientation-note" aria-hidden="true">Rotate to landscape for more room to drive</div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
